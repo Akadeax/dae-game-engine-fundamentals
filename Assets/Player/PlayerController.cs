@@ -2,12 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] UnityEvent<Augment> OnAugmentChanged;
+    public enum Augment
+    {
+        None,
+        Detacher
+    }
+
     [SerializeField] float speed = 5f;
     [SerializeField] float rotationSpeed = 2f;
     [SerializeField] float pitchLimitDeg = 90f;
+
+    public Augment currentAugment;
 
     Rigidbody rb;
 
@@ -36,6 +46,13 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            print("ah");
+            currentAugment = Augment.Detacher;
+            OnAugmentChanged.Invoke(currentAugment);
+        }
+
         // Mouse rotations
         transform.Rotate(Input.GetAxisRaw("Mouse X") * rotationSpeed * Time.deltaTime * Vector3.up);
         Vector3 oldRotationEuler = Camera.main.transform.rotation.eulerAngles;
@@ -70,5 +87,12 @@ public class PlayerController : MonoBehaviour
         }
 
         return angle;
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // check if augment pad; then change augment
+
     }
 }

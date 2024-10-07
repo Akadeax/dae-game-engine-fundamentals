@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShooterController : MonoBehaviour
 {
     [SerializeField] LineRenderer lineRenderer;
+    [SerializeField] PlayerController playerController;
 
     Vector3 origin = Vector3.zero;
     Vector3 direction = Vector3.zero;
@@ -19,7 +20,10 @@ public class ShooterController : MonoBehaviour
         // Keep on drawing shot while held
         else if (Input.GetMouseButton(0))
         {
-            SetShotPosition();
+            if (playerController.currentAugment != PlayerController.Augment.Detacher)
+            {
+                SetShotPosition();
+            }
             DrawShotLine();
         }
         // Release shot

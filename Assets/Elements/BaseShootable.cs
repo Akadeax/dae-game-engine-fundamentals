@@ -5,13 +5,13 @@ using UnityEngine;
 
 public abstract class BaseShootable : MonoBehaviour
 {
-    enum ActivationType
+    protected enum ActivationType
     {
         Timed, Toggle
     }
 
-    [SerializeField] ActivationType type;
-    [SerializeField] float activationTimeOnShot = 2f;
+    [SerializeField] protected ActivationType type;
+    [SerializeField] protected float activationTimeOnShot = 2f;
 
     float currentTimeActivatedLeft = 0f;
     bool toggleActivated = false;
