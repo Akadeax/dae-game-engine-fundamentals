@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] UnityEvent<Augment> OnAugmentChanged;
+    public  UnityEvent<Augment> OnAugmentChanged;
     public enum Augment
     {
         None,
@@ -87,14 +87,5 @@ public class PlayerController : MonoBehaviour
         }
 
         return angle;
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.TryGetComponent(out AugmentPanel panel)) return;
-
-        currentAugment = panel.augment;
-        OnAugmentChanged.Invoke(currentAugment);
     }
 }

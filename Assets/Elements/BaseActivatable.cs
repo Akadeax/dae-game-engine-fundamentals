@@ -25,7 +25,6 @@ public abstract class BaseActivatable : MonoBehaviour
 
     void ActivationsUpdated()
     {
-        print(currentActivations);
         if (currentActivations >= numActivationsNeeded)
         {
             Activate();
