@@ -92,7 +92,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // check if augment pad; then change augment
+        if (!other.TryGetComponent(out AugmentPanel panel)) return;
 
+        currentAugment = panel.augment;
+        OnAugmentChanged.Invoke(currentAugment);
     }
 }
