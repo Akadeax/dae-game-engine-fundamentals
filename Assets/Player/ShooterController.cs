@@ -6,8 +6,8 @@ public class ShooterController : MonoBehaviour
 {
     [SerializeField] LineRenderer lineRenderer;
 
-    Vector3 originOnDown = Vector3.zero;
-    Vector3 directionOnDown = Vector3.zero;
+    Vector3 origin = Vector3.zero;
+    Vector3 direction = Vector3.zero;
 
     private void Update()
     {
@@ -19,14 +19,20 @@ public class ShooterController : MonoBehaviour
         // Keep on drawing shot while held
         else if (Input.GetMouseButton(0))
         {
+            SetShotPosition();
             DrawShotLine();
         }
         // Release shot
         else if (Input.GetMouseButtonUp(0))
         {
             lineRenderer.enabled = false;
-            print(DrawRecursiveRaycast(0, originOnDown, directionOnDown));
+            Transform obj = DrawRecursiveRaycast(0, origin, direction);
             lineRenderer.positionCount = 0;
+
+            if (obj.TryGetComponent(out BaseShootable shootableObj))
+            {
+                shootableObj.OnShot();
+            }
         }
         // Redirect shot
         if (Input.GetMouseButtonDown(1))
@@ -37,15 +43,15 @@ public class ShooterController : MonoBehaviour
 
     void SetShotPosition()
     {
-        originOnDown = Camera.main.transform.position;
-        directionOnDown = Camera.main.transform.forward;
+        origin = Camera.main.transform.position + new Vector3(0, -0.15f, 0);
+        direction = Camera.main.transform.forward;
     }
 
     void DrawShotLine()
     {
         lineRenderer.enabled = true;
         lineRenderer.positionCount = 1;
-        DrawRecursiveRaycast(0, originOnDown, directionOnDown);
+        DrawRecursiveRaycast(0, origin, direction);
     }
 
 

@@ -8,13 +8,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float speed = 5f;
     [SerializeField] float rotationSpeed = 2f;
     [SerializeField] float pitchLimitDeg = 90f;
-    [SerializeField] float gravity = 2f;
 
-    CharacterController characterController;
+    Rigidbody rb;
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -24,33 +23,28 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        // Apply movement (I see no sense in using the new input system in a PC-only prototype)
         Vector3 camForward = new Vector3(transform.forward.x, 0, transform.forward.z);
         Vector3 camRight = Vector3.Cross(Vector3.up, camForward);
 
-        Vector3 forwardBackward = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime * camForward;
-        Vector3 leftRight = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime * camRight;
+        Vector3 forwardBackward = Input.GetAxisRaw("Vertical") * speed * Time.fixedDeltaTime * camForward;
+        Vector3 leftRight = Input.GetAxisRaw("Horizontal") * speed * Time.fixedDeltaTime * camRight;
 
-        characterController.Move(forwardBackward + leftRight);
+        rb.MovePosition(transform.position + forwardBackward + leftRight);
+    }
 
-        transform.Rotate(Input.GetAxisRaw("Mouse X") * rotationSpeed * Vector3.up);
-        // Mouse rotation
+    private void Update()
+    {
+        // Mouse rotations
+        transform.Rotate(Input.GetAxisRaw("Mouse X") * rotationSpeed * Time.deltaTime * Vector3.up);
         Vector3 oldRotationEuler = Camera.main.transform.rotation.eulerAngles;
 
 
-        oldRotationEuler.x -= Input.GetAxisRaw("Mouse Y") * rotationSpeed;
+        oldRotationEuler.x -= Input.GetAxisRaw("Mouse Y") * rotationSpeed * Time.deltaTime;
         oldRotationEuler.x = RestrictAngle(oldRotationEuler.x, -pitchLimitDeg, pitchLimitDeg);
 
         Camera.main.transform.eulerAngles = oldRotationEuler;
-
-
-        // Apply gravity
-        if (!characterController.isGrounded)
-        {
-            characterController.Move(gravity * Time.deltaTime * Vector3.down);
-        }
     }
 
     // The angle rolls over 0 -> 360 so we can't just Mathf.Clamp; used for camera pitch
