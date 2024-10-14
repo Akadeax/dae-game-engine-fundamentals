@@ -33,7 +33,7 @@ public class ShooterController : MonoBehaviour
             Transform obj = DrawRecursiveRaycast(0, origin, direction);
             lineRenderer.positionCount = 0;
 
-            if (obj.TryGetComponent(out BaseShootable shootableObj))
+            if (obj != null && obj.TryGetComponent(out BaseShootable shootableObj))
             {
                 shootableObj.OnShot();
             }

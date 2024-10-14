@@ -5,6 +5,12 @@ using UnityEngine;
 
 public abstract class BaseShootable : MonoBehaviour
 {
+    public delegate void ActivationEvent();
+    public event ActivationEvent Activation;
+
+    public delegate void DeactivationEvent();
+    public event DeactivationEvent Deactivation;
+
     protected enum ActivationType
     {
         Timed, Toggle
@@ -26,8 +32,12 @@ public abstract class BaseShootable : MonoBehaviour
             if (currentTimeActivatedLeft > 0)
             {
                 OnDeactivated();
+                Deactivation.Invoke();
             }
+
             OnActivated();
+            Activation.Invoke();
+
             currentTimeActivatedLeft = activationTimeOnShot;
         }
         else
@@ -36,10 +46,12 @@ public abstract class BaseShootable : MonoBehaviour
             if (toggleActivated)
             {
                 OnActivated();
+                Activation.Invoke();
             }
             else
             {
                 OnDeactivated();
+                Deactivation.Invoke();
             }
         }
     }
@@ -53,7 +65,9 @@ public abstract class BaseShootable : MonoBehaviour
         if (currentTimeActivatedLeft <= 0f)
         {
             currentTimeActivatedLeft = 0f;
+
             OnDeactivated();
+            Deactivation.Invoke();
         }
     }
 }

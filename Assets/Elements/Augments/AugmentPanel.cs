@@ -6,9 +6,15 @@ public class AugmentPanel : BaseShootable
 {
     [SerializeField] PlayerController.Augment augment;
 
+    PlayerController controller;
+
+    private void Awake()
+    {
+        controller = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+    }
+
     protected override void OnActivated()
     {
-        var controller = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         controller.currentAugment = augment;
         controller.OnAugmentChanged.Invoke(augment);
     }

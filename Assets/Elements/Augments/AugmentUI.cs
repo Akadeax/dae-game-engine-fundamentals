@@ -10,20 +10,26 @@ public class AugmentUI : MonoBehaviour
     [SerializeField] Texture2D operatorTex;
     [SerializeField] Texture2D scannerTex;
 
+    RawImage image;
+
+    private void Awake()
+    {
+        image = GetComponent<RawImage>();
+    }
+
     private void Start()
     {
-        GetComponent<RawImage>().enabled = true;
+        image.enabled = true;
     }
 
     public void SetTexture(PlayerController.Augment augment)
     {
-        var img = GetComponent<RawImage>();
         switch (augment)
         {
             case PlayerController.Augment.None:
-                img.texture = noneTex; break;
+                image.texture = noneTex; break;
             case PlayerController.Augment.Detacher:
-                img.texture = detacherTex; break;
+                image.texture = detacherTex; break;
         }
     }
 }

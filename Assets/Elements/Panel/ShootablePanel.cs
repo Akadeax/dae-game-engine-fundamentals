@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class ShootablePanel : BaseShootable
 {
+
+
+
     [SerializeField] List<BaseActivatable> activatable;
 
     private void Start()
@@ -26,6 +29,12 @@ public class ShootablePanel : BaseShootable
         GetComponent<MeshRenderer>().material.color = Color.green;
         foreach(BaseActivatable activatable in activatable)
         {
+            if (activatable == null)
+            {
+                Debug.LogError("Null Activatable in Panel");
+                continue;
+            }
+
             activatable.OnActivated();
         }
     }
@@ -35,6 +44,12 @@ public class ShootablePanel : BaseShootable
         GetComponent<MeshRenderer>().material.color = Color.yellow;
         foreach (BaseActivatable activatable in activatable)
         {
+            if (activatable == null)
+            {
+                Debug.LogError("Null Activatable in Panel");
+                continue;
+            }
+
             activatable.RemoveActivation();
         }
     }
