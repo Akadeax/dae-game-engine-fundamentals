@@ -5,28 +5,29 @@ using UnityEngine;
 
 public class ShootablePanel : BaseShootable
 {
-
-
-
     [SerializeField] List<BaseActivatable> activatable;
+
+    TextMeshPro text;
+    MeshRenderer mesh;
 
     private void Start()
     {
-        TextMeshPro mesh = transform.GetChild(0).GetComponent<TextMeshPro>();
+        text = transform.GetChild(0).GetComponent<TextMeshPro>();
+        mesh = transform.GetChild(1).GetComponent<MeshRenderer>();
 
         if (type == ActivationType.Timed)
         {
-            mesh.text = activationTimeOnShot.ToString();
+            text.text = activationTimeOnShot.ToString();
         }
         else
         {
-            mesh.text = "T";
+            text.text = "T";
         }
     }
 
     protected override void OnActivated()
     {
-        GetComponent<MeshRenderer>().material.color = Color.green;
+       mesh.material.color = Color.green;
         foreach(BaseActivatable activatable in activatable)
         {
             if (activatable == null)
@@ -37,11 +38,16 @@ public class ShootablePanel : BaseShootable
 
             activatable.OnActivated();
         }
+
+        if (type == ActivationType.Timed)
+        {
+            StartCoroutine(TimeLeftUpdate());
+        }
     }
 
     protected override void OnDeactivated()
     {
-        GetComponent<MeshRenderer>().material.color = Color.yellow;
+        mesh.material.color = Color.red;
         foreach (BaseActivatable activatable in activatable)
         {
             if (activatable == null)
@@ -52,5 +58,16 @@ public class ShootablePanel : BaseShootable
 
             activatable.RemoveActivation();
         }
+    }
+
+    IEnumerator TimeLeftUpdate()
+    {
+        while (currentTimeActivatedLeft > 0)
+        {
+            text.text = currentTimeActivatedLeft.ToString("N1");
+            yield return null;
+        }
+
+        text.text = activationTimeOnShot.ToString();
     }
 }

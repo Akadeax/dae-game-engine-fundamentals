@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ActivatableDoor : BaseActivatable
 {
+    [SerializeField] bool inverted = false;
+
     float startingYScale = 0f;
     bool open = false;
 
@@ -13,9 +15,33 @@ public class ActivatableDoor : BaseActivatable
     private void Start()
     {
         startingYScale = transform.localScale.y;
+
+        if (inverted) Open();
     }
 
     protected override void Activate()
+    {
+        if (inverted)
+        {
+            Close();
+            return;
+        }
+
+        Open();
+    }
+
+    protected override void Deactivate()
+    {
+        if (inverted)
+        {
+            Open();
+            return;
+        }
+
+        Close();
+    }
+
+    void Open()
     {
         if (toggleCoroutineRunning)
         {
@@ -24,7 +50,8 @@ public class ActivatableDoor : BaseActivatable
         open = false;
         toggleCoroutine = StartCoroutine(Toggle());
     }
-    protected override void Deactivate()
+
+    void Close()
     {
         if (toggleCoroutineRunning)
         {
@@ -33,6 +60,7 @@ public class ActivatableDoor : BaseActivatable
         open = true;
         toggleCoroutine = StartCoroutine(Toggle());
     }
+
 
     IEnumerator Toggle()
     {

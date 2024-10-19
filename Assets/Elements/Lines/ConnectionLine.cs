@@ -12,12 +12,14 @@ public class ConnectionLine : MonoBehaviour
     ParticleSystem.MainModule lineParticlesMain;
 
     const float TRAVEL_SPEED = 2f;
+    readonly Color ACTIVE = new Color(0, 1, 0, 0.4f);
+    readonly Color INACTIVE = new Color(1, 0, 0, 0.4f);
 
     void Start()
     {
         lineParticles = Instantiate(lineParticlesPrefab);
         lineParticlesMain = lineParticles.GetComponent<ParticleSystem>().main;
-        lineParticlesMain.startColor = Color.red;
+        lineParticlesMain.startColor = INACTIVE;
 
         StartCoroutine(Move());
 
@@ -41,11 +43,11 @@ public class ConnectionLine : MonoBehaviour
 
     void OnShootableActivated()
     {
-        lineParticlesMain.startColor = Color.green;
+        lineParticlesMain.startColor = ACTIVE;
     }
 
     void OnShootableDeactivated()
     {
-        lineParticlesMain.startColor = Color.red;
+        lineParticlesMain.startColor = INACTIVE;
     }
 }

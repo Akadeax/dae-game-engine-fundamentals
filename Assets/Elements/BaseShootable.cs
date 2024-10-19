@@ -19,7 +19,7 @@ public abstract class BaseShootable : MonoBehaviour
     [SerializeField] protected ActivationType type;
     [SerializeField] protected float activationTimeOnShot = 2f;
 
-    float currentTimeActivatedLeft = 0f;
+    protected float currentTimeActivatedLeft = 0f;
     bool toggleActivated = false;
 
     protected abstract void OnActivated();
@@ -35,10 +35,11 @@ public abstract class BaseShootable : MonoBehaviour
                 Deactivation.Invoke();
             }
 
+            currentTimeActivatedLeft = activationTimeOnShot;
+
             OnActivated();
             Activation.Invoke();
 
-            currentTimeActivatedLeft = activationTimeOnShot;
         }
         else
         {

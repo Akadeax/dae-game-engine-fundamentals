@@ -1,7 +1,15 @@
 fileFormatVersion: 2
-guid: 015ef1a78b82c5148b7c98cd0af173c6
-PrefabImporter:
-  externalObjects: {}
+guid: 02dbd2dac67b859459ba82ddfb6dfcf6
+labels:
+- Character
+- Controller
+- FPS
+- FirstPerson
+- Rigidbody
+timeCreated: 1498723443
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
