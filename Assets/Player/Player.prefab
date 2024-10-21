@@ -56,13 +56,13 @@ MonoBehaviour:
     move: 1
     jump: 0
     jumpFromAir: 0
-    sprint: 1
+    sprint: 0
     crouch: 0
     prone: 0
     slide: 0
     look: 1
     lean: 0
-    headBob: 1
+    headBob: 0
   movement:
     speed:
       vector: {x: 0, y: 0}
@@ -92,7 +92,7 @@ MonoBehaviour:
     walk:
       height: 1.8
       radius: 0.35
-      speed: 3.5
+      speed: 4.5
       stepTime: 0.5
       sounds: {fileID: 11400000, guid: e50c2617fb106c241b54562cfef1cb0b, type: 2}
       headbob: {fileID: 11400000, guid: 5caa6b9bec02b684f82233c569ee1075, type: 2}
@@ -707,3 +707,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 6041692961652899771}
   playerController: {fileID: 6544748169874522616}
+  impactParticlesPrefab: {fileID: 126846088360365178, guid: 7322c26f79125e34aaabbc1279702161, type: 3}

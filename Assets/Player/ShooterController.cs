@@ -7,8 +7,17 @@ public class ShooterController : MonoBehaviour
     [SerializeField] LineRenderer lineRenderer;
     [SerializeField] PlayerController playerController;
 
+    [SerializeField] GameObject impactParticlesPrefab;
+    ParticleSystem impactParticles;
+
     Vector3 origin = Vector3.zero;
     Vector3 direction = Vector3.zero;
+
+    private void Start()
+    {
+        GameObject go = Instantiate(impactParticlesPrefab);
+        impactParticles = go.GetComponent<ParticleSystem>();
+    }
 
     private void Update()
     {
@@ -30,8 +39,13 @@ public class ShooterController : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             lineRenderer.enabled = false;
-            Transform obj = DrawRecursiveRaycast(0, origin, direction);
+            Transform obj = DrawRecursiveRaycast(0, origin, direction, out var hit);
             lineRenderer.positionCount = 0;
+
+            impactParticles.transform.position = hit.point;
+            impactParticles.Play();
+
+            impactParticles.transform.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
 
             if (obj != null && obj.TryGetComponent(out BaseShootable shootableObj))
             {
@@ -47,24 +61,28 @@ public class ShooterController : MonoBehaviour
 
     void SetShotPosition()
     {
-        origin = Camera.main.transform.position + new Vector3(0, -0.15f, 0);
         direction = Camera.main.transform.forward;
+
+        Vector3 right = Camera.main.transform.right * 0.15f;
+
+        origin = Camera.main.transform.position + new Vector3(0, -0.15f, 0) + right;
     }
 
     void DrawShotLine()
     {
         lineRenderer.enabled = true;
         lineRenderer.positionCount = 1;
-        DrawRecursiveRaycast(0, origin, direction);
+        DrawRecursiveRaycast(0, origin, direction, out var hit);
     }
 
 
-    Transform DrawRecursiveRaycast(int index, Vector3 start, Vector3 direction)
+    Transform DrawRecursiveRaycast(int index, Vector3 start, Vector3 direction, out RaycastHit hit)
     {
         while (true)
         {
             Ray ray = new(start, direction);
             Physics.Raycast(ray, out var hitInfo);
+            hit = hitInfo;
 
             // If nothing was hit, just shoot out a visible ray anyway
             if (hitInfo.point == Vector3.zero)
