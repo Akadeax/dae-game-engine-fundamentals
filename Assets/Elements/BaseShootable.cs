@@ -32,13 +32,13 @@ public abstract class BaseShootable : MonoBehaviour
             if (currentTimeActivatedLeft > 0)
             {
                 OnDeactivated();
-                Deactivation.Invoke();
+                Deactivation?.Invoke();
             }
 
             currentTimeActivatedLeft = activationTimeOnShot;
 
             OnActivated();
-            Activation.Invoke();
+            Activation?.Invoke();
 
         }
         else
@@ -47,12 +47,12 @@ public abstract class BaseShootable : MonoBehaviour
             if (toggleActivated)
             {
                 OnActivated();
-                Activation.Invoke();
+                Activation?.Invoke();
             }
             else
             {
                 OnDeactivated();
-                Deactivation.Invoke();
+                Deactivation?.Invoke();
             }
         }
     }
@@ -68,7 +68,7 @@ public abstract class BaseShootable : MonoBehaviour
             currentTimeActivatedLeft = 0f;
 
             OnDeactivated();
-            Deactivation.Invoke();
+            Deactivation?.Invoke();
         }
     }
 }

@@ -10,8 +10,12 @@ public class ShooterController : MonoBehaviour
     [SerializeField] GameObject impactParticlesPrefab;
     ParticleSystem impactParticles;
 
+    [SerializeField] PlayerInputActions inputActions;
+
     Vector3 origin = Vector3.zero;
     Vector3 direction = Vector3.zero;
+
+    bool shootHeld = false;
 
     private void Start()
     {
@@ -19,52 +23,62 @@ public class ShooterController : MonoBehaviour
         impactParticles = go.GetComponent<ParticleSystem>();
     }
 
+    private void OnEnable()
+    {
+        inputActions = new PlayerInputActions();
+
+        inputActions.Gameplay.Enable();
+        inputActions.Gameplay.Shoot.started += Shoot_started;
+        inputActions.Gameplay.Shoot.canceled += Shoot_canceled;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Gameplay.Disable();
+    }
+
+    private void Shoot_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        shootHeld = false;
+
+        lineRenderer.enabled = false;
+        Transform hitObj = DrawRecursiveRaycast(0, origin, direction, out var hit);
+        lineRenderer.positionCount = 0;
+
+        impactParticles.transform.position = hit.point;
+        impactParticles.Play();
+
+        impactParticles.transform.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
+
+        if (hitObj != null && hitObj.TryGetComponent(out BaseShootable shootableObj))
+        {
+            shootableObj.OnShot();
+        }
+    }
+
+    private void Shoot_started(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        shootHeld = true;
+        SetShotPosition();
+    }
+
+
+
     private void Update()
     {
-        // Align shot
-        if (Input.GetMouseButtonDown(0))
+        if (!shootHeld) return;
+
+        if (playerController.currentAugment != PlayerController.Augment.Detacher)
         {
             SetShotPosition();
         }
-        // Keep on drawing shot while held
-        else if (Input.GetMouseButton(0))
-        {
-            if (playerController.currentAugment != PlayerController.Augment.Detacher)
-            {
-                SetShotPosition();
-            }
-            DrawShotLine();
-        }
-        // Release shot
-        else if (Input.GetMouseButtonUp(0))
-        {
-            lineRenderer.enabled = false;
-            Transform obj = DrawRecursiveRaycast(0, origin, direction, out var hit);
-            lineRenderer.positionCount = 0;
-
-            impactParticles.transform.position = hit.point;
-            impactParticles.Play();
-
-            impactParticles.transform.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
-
-            if (obj != null && obj.TryGetComponent(out BaseShootable shootableObj))
-            {
-                shootableObj.OnShot();
-            }
-        }
-        // Redirect shot
-        if (Input.GetMouseButtonDown(1))
-        {
-            SetShotPosition();
-        }
+        DrawShotLine();
     }
 
     void SetShotPosition()
     {
         direction = Camera.main.transform.forward;
-
         Vector3 right = Camera.main.transform.right * 0.15f;
-
         origin = Camera.main.transform.position + new Vector3(0, -0.15f, 0) + right;
     }
 
