@@ -94,7 +94,7 @@ MonoBehaviour:
       radius: 0.35
       speed: 4.5
       stepTime: 0.5
-      sounds: {fileID: 11400000, guid: e50c2617fb106c241b54562cfef1cb0b, type: 2}
+      sounds: {fileID: 11400000, guid: a6a6e3f3e55abe6428e58f5d459fefd5, type: 2}
       headbob: {fileID: 11400000, guid: 5caa6b9bec02b684f82233c569ee1075, type: 2}
     sprint:
       speed: 7
@@ -281,7 +281,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.332
+  m_Volume: 0.04
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -392,6 +392,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  killYThreshold: -100
   currentAugment: 0
 --- !u!1 &1602029856848964
 GameObject:

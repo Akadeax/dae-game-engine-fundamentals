@@ -111,6 +111,11 @@ public class ShooterController : MonoBehaviour
                 startOffset = direction;
             }
 
+            if (lineRenderer.positionCount != 1)
+            {
+                lineRenderer.positionCount = 1;
+            }
+
             lineRenderer.SetPosition(index, start + startOffset);
             lineRenderer.positionCount++;
             lineRenderer.SetPosition(index + 1, hitInfo.point);

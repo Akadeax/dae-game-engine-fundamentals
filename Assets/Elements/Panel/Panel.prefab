@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 1389617520780578867}
   - component: {fileID: 6663906056331166517}
   - component: {fileID: 892644251201474048}
-  - component: {fileID: 343272232379715520}
+  - component: {fileID: 8631549282866983191}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -703,8 +703,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5735962818850296651}
   m_Mesh: {fileID: 0}
---- !u!64 &343272232379715520
-MeshCollider:
+--- !u!65 &8631549282866983191
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -721,10 +721,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 3
+  m_Size: {x: 0.98511267, y: 1.1499796, z: 0.5511904}
+  m_Center: {x: -0.4925561, y: 0.5749898, z: 0.1486826}
 --- !u!1 &6509269025481392527
 GameObject:
   m_ObjectHideFlags: 0

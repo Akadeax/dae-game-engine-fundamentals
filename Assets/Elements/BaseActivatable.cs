@@ -7,6 +7,7 @@ using UnityEngine;
 public abstract class BaseActivatable : MonoBehaviour
 {
     [SerializeField] int numActivationsNeeded = 1;
+    [SerializeField] bool allowMoreActivationsThanNeeded = true;
     int currentActivations;
 
     [SerializeField] bool permanent;
@@ -25,7 +26,10 @@ public abstract class BaseActivatable : MonoBehaviour
 
     void ActivationsUpdated()
     {
-        if (currentActivations >= numActivationsNeeded)
+        if (
+            (allowMoreActivationsThanNeeded && currentActivations >= numActivationsNeeded) ||
+            (!allowMoreActivationsThanNeeded && currentActivations == numActivationsNeeded)
+            )
         {
             Activate();
         }
