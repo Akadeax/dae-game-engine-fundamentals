@@ -11,6 +11,7 @@ public class ShooterController : MonoBehaviour
     ParticleSystem impactParticles;
 
     [SerializeField] PlayerInputActions inputActions;
+    [SerializeField] LayerMask shootable;
 
     Vector3 origin = Vector3.zero;
     Vector3 direction = Vector3.zero;
@@ -101,7 +102,7 @@ public class ShooterController : MonoBehaviour
         while (true)
         {
             Ray ray = new(start, rayDirection);
-            Physics.Raycast(ray, out var hitInfo);
+            Physics.Raycast(ray, out var hitInfo, 5000, shootable);
             hit = hitInfo;
 
             // If nothing was hit (e.g. shooting into the sky), just shoot out a visible ray in the direction anyway
