@@ -7,13 +7,17 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public  UnityEvent<Augment> OnAugmentChanged;
+    // Augments change something about the players mechanics
     public enum Augment
     {
-        None,
-        Detacher
+        None, // Nothing
+        Detacher // The player's laser stays at the location and orientation where the shoot button was held down
     }
 
+    // Notify anyone interested when the player's augment changes
+    public UnityEvent<Augment> OnAugmentChanged;
+
+    // Reset the level when below this y coordinate
     [SerializeField] float killYThreshold = -100f;
 
     public Augment currentAugment;

@@ -19,6 +19,7 @@ public class ShooterController : MonoBehaviour
 
     private void Start()
     {
+        // re-use the same impact particles instance so we don't have to spawn some anytime we shoot
         GameObject go = Instantiate(impactParticlesPrefab);
         impactParticles = go.GetComponent<ParticleSystem>();
     }
@@ -37,12 +38,19 @@ public class ShooterController : MonoBehaviour
         inputActions.Gameplay.Disable();
     }
 
+
+    private void Shoot_started(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        shootHeld = true;
+        SetShotPosition();
+    }
+
     private void Shoot_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         shootHeld = false;
 
         lineRenderer.enabled = false;
-        Transform hitObj = DrawRecursiveRaycast(0, origin, direction, out var hit);
+        Transform hitObj = DrawRecursiveRaycast(origin, direction, out var hit);
         lineRenderer.positionCount = 0;
 
         impactParticles.transform.position = hit.point;
@@ -55,13 +63,6 @@ public class ShooterController : MonoBehaviour
             shootableObj.OnShot();
         }
     }
-
-    private void Shoot_started(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        shootHeld = true;
-        SetShotPosition();
-    }
-
 
 
     private void Update()
@@ -86,19 +87,24 @@ public class ShooterController : MonoBehaviour
     {
         lineRenderer.enabled = true;
         lineRenderer.positionCount = 1;
-        DrawRecursiveRaycast(0, origin, direction, out var hit);
+        DrawRecursiveRaycast(origin, direction, out var hit);
     }
 
-
-    Transform DrawRecursiveRaycast(int index, Vector3 start, Vector3 direction, out RaycastHit hit)
+    /// <summary>
+    /// Execute a linecast in the given rayDirection, reflecting off of mirrors
+    /// </summary>
+    /// <returns></returns>
+    Transform DrawRecursiveRaycast(Vector3 start, Vector3 rayDirection, out RaycastHit hit)
     {
+        int reflectionIndex = 0;
+
         while (true)
         {
-            Ray ray = new(start, direction);
+            Ray ray = new(start, rayDirection);
             Physics.Raycast(ray, out var hitInfo);
             hit = hitInfo;
 
-            // If nothing was hit, just shoot out a visible ray anyway
+            // If nothing was hit (e.g. shooting into the sky), just shoot out a visible ray in the direction anyway
             if (hitInfo.point == Vector3.zero)
             {
                 hitInfo.point = ray.origin + ray.direction * 5000f;
@@ -106,9 +112,9 @@ public class ShooterController : MonoBehaviour
 
             Vector3 startOffset = Vector3.zero;
             // First point gets offset to not clip into player
-            if (index == 0)
+            if (reflectionIndex == 0)
             {
-                startOffset = direction;
+                startOffset = rayDirection;
             }
 
             if (lineRenderer.positionCount != 1)
@@ -116,16 +122,18 @@ public class ShooterController : MonoBehaviour
                 lineRenderer.positionCount = 1;
             }
 
-            lineRenderer.SetPosition(index, start + startOffset);
+            // Set line renderer positions to display the raycast to the player
+            lineRenderer.SetPosition(reflectionIndex, start + startOffset);
             lineRenderer.positionCount++;
-            lineRenderer.SetPosition(index + 1, hitInfo.point);
+            lineRenderer.SetPosition(reflectionIndex + 1, hitInfo.point);
 
             if (!hitInfo.transform || !hitInfo.transform.CompareTag("Mirror")) return hitInfo.transform;
 
+            // Re-iterate loop if this is a mirror
             Vector3 mirrored = Vector3.Reflect(ray.direction, hitInfo.normal);
-            ++index;
+            ++reflectionIndex;
             start = hitInfo.point;
-            direction = mirrored;
+            rayDirection = mirrored;
         }
     }
 }
